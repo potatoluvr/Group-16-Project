@@ -1,3 +1,9 @@
+# Website
+
+[group-16-project.vercel.app](https://group-16-project.vercel.app/)
+
+Forking from main to deploy on Vercel
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
