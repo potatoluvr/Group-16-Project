@@ -7,6 +7,7 @@ import NotFound from "./components/404";
 import "./components/FooterStyle.css";
 import "./components/HeaderStyle.css";
 import VolunteerHisoryPage from "./webpages/VolunteerHisoryPage";
+import UserProfile from "./webpages/UserProfile";
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/user-profile" element={<UserProfileManagement />} />
+        <Route path="/user-profile/edit" element={<UserProfileManagement />} />
+        <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/event-management" element={<EventManagement />} />
         <Route
           path="/user-profile/volunteer-history"
