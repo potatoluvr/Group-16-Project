@@ -1,11 +1,15 @@
 import UserProfileManagementForm from "../components/UserProfileManagementForm";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import "./UserProfileManagementStyle.css";
 
 function UserProfileManagement() {
   return (
-    <div>
-      <h1>User Profile Management</h1>
-    </div>
+    <div className="user-profile-form">
+        <Header />
+        <UserProfileManagementForm />
+        <Footer />
+      </div>
   );
 }
 
