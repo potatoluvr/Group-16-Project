@@ -1,4 +1,5 @@
-import UserProfileForm from "../components/UserProfileForm";
+import UserProfileManagementForm from "../components/UserProfileManagementForm";
+import "./UserProfileStyle.css";
 
 function UserProfileManagement() {
   return (
