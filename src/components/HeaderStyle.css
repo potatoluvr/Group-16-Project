@@ -1,0 +1,12 @@
+header {
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  z-index: 10;
+}

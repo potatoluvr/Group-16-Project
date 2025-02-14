@@ -1,8 +1,9 @@
-import "./webpages/LoginSyle.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./webpages/Login";
 import SignUp from "./webpages/SignUp";
 import UserProfileManagement from "./webpages/UserProfileManagement";
+import "./components/FooterStyle.css";
+import "./components/HeaderStyle.css";
 
 function App() {
   return (

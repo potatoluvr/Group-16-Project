@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
-  // Function to validate email
+  // Validate email
   const validateEmail = (email) => {
     const validEmails = ["admin@gmail.com", "volunteer@gmail.com"];
     return validEmails.includes(email);
   };
 
-  // Function to validate password length
+  // Validate password length
   const validatePassword = (password) => {
-    return password.length > 7; // Password must be longer than 7 characters
+    return password.length > 7;
   };
 
   // Handle form submission

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook
-import "../webpages/SignUpStyle.css";
+import { useNavigate } from "react-router-dom";
 
 function SignUpForm() {
   const [email, setEmail] = useState("");
@@ -10,13 +9,13 @@ function SignUpForm() {
 
   const navigate = useNavigate(); // Initialize navigate
 
-  // Function to validate email
+  // Validate email
   const validateEmail = (email) => {
     const validEmails = ["admin@gmail.com", "volunteer@gmail.com"];
     return validEmails.includes(email);
   };
 
-  // Function to validate password length
+  // Validate password length
   const validatePassword = (password) => {
     return password.length > 7; // Password must be longer than 7 characters
   };
@@ -46,7 +45,7 @@ function SignUpForm() {
 
     setErrorMessage(""); // Clear error message if everything is valid
 
-    // Simulate the signup process (replace with actual logic)
+    // Simulate the signup process (placeholder)
     console.log("Sign Up Successful!", { email, password });
 
     // Redirect to UserProfileManagement page upon successful signup
