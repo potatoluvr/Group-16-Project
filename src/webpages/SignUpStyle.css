@@ -45,7 +45,7 @@
 }
 
 /* Padding and styling the buttons */
-button {
+.button-signup {
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
