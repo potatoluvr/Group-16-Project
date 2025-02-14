@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import VolunteerHistory from "../components/VolunteerHistory";
 import "./VolunteerHistoryTable.css";
 import { FaBell, FaUserCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 function VolunteerHisoryPage() {
   const [notifications] = useState([
@@ -39,10 +40,14 @@ function VolunteerHisoryPage() {
               </div>
             )}
           </div>
-          <button className="profile-icon">
-            <FaUserCircle />
-          </button>
-          <button className="signout">Sign Out</button>
+          <Link to="/user-profile">
+            <button className="profile-icon">
+              <FaUserCircle />
+            </button>
+          </Link>
+          <Link to="/">
+            <button className="signout">Sign Out</button>
+          </Link>
         </div>
       </header>
       <VolunteerHistory />
