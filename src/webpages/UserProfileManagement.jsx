@@ -1,3 +1,5 @@
+import UserProfileForm from "../components/UserProfileForm";
+
 function UserProfileManagement() {
   return (
     <div>
