@@ -6,6 +6,7 @@ import EventManagement from "./webpages/EventManagement";
 import NotFound from "./components/404";
 import "./components/FooterStyle.css";
 import "./components/HeaderStyle.css";
+import VolunteerHisoryPage from "./webpages/VolunteerHisoryPage";
 
 function App() {
   return (
@@ -15,6 +16,10 @@ function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/user-profile" element={<UserProfileManagement />} />
         <Route path="/event-management" element={<EventManagement />} />
+        <Route
+          path="/user-profile/volunteer-history"
+          element={<VolunteerHisoryPage />}
+        />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
