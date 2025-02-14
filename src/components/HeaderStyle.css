@@ -9,4 +9,6 @@ header {
   padding: 10px;
   text-align: center;
   z-index: 10;
+  grid-template-columns: auto 1fr; /*i dunno how to make the button top left better, fix if theres a better way*/
+  display: grid;
 }
