@@ -38,8 +38,16 @@ function LoginForm() {
 
     setErrorMessage(""); // Clear error message if both email and password are valid
 
-    // After successful login, navigate to the user profile page
-    navigate("/user-profile");
+    // TODO: replace with an actual check
+    const isProfileComplete = false; // Assume profile needs completion 
+  
+    // Redirect user to complete profile if not completed
+    if (!isProfileComplete) {
+      navigate("/user-profile/edit");
+    } else {
+      navigate("/user-profile"); // Navigate to the user profile page
+    }
+
   };
 
   // Handle sign-up button click
