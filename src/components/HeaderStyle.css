@@ -9,6 +9,4 @@ header {
   padding: 10px;
   text-align: center;
   z-index: 10;
-  grid-template-columns: auto 1fr;
-  display: grid;
 }
