@@ -49,7 +49,7 @@ function SignUpForm() {
     console.log("Sign Up Successful!", { email, password });
 
     // Redirect to UserProfileManagement page upon successful signup
-    navigate("/user-profile");
+    navigate("/user-profile/edit");
   };
 
   return (
