@@ -35,17 +35,21 @@
   border: none;
   width: 200px;
   z-index: 1000;
+  display: block;
+  padding: 0;
 }
 
 .notification-item {
   width: 100%;
   padding: 10px;
+  margin: 0;
   border: none;
   background-color: #000000;
   text-align: left;
   cursor: pointer;
   transition: background-color 0.3s;
   border-radius: 4px;
+  box-sizing: border-box;
 }
 
 .notification-item:hover {

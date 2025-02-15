@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaBell } from "react-icons/fa";
+import "./NotificationStyle.css";
 
 const Notification = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to manage dropdown visibility
@@ -10,12 +11,12 @@ const Notification = () => {
 
   return (
     <div className="notification-container">
-      {/* Notification button (bell) */}
+      {/* Notification button */}
       <button className="notification-button" onClick={toggleDropdown}>
         <FaBell />
       </button>
 
-      {/* Dropdown menu for notifications (now contains buttons) */}
+      {/* Dropdown menu for notifications */}
       {isDropdownOpen && (
         <div className="dropdown-menu">
           <button className="notification-item">Notification 1</button>
