@@ -22,13 +22,6 @@
   width: 45%;
 }
 
-.volunteer-matching-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 45%;
-}
-
 .event-date-container {
   width: 100%;
 }
