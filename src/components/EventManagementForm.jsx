@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import 'react-datepicker/dist/react-datepicker.css';
@@ -26,6 +26,46 @@ function EventManagementForm() {
         { value: 'medium', label: 'Medium' },
         { value: 'high', label: 'High' },
     ];
+
+    // dark light styling
+    const [isDark, setIsDark] = useState(
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      );
+    
+      useEffect(() => {
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+        const handleThemeChange = (e) => setIsDark(e.matches);
+    
+        mediaQuery.addEventListener("change", handleThemeChange);
+        return () => mediaQuery.removeEventListener("change", handleThemeChange);
+      }, []);
+    
+      const lightdark = {
+        control: (base) => ({
+          ...base,
+          backgroundColor: isDark ? "#2b2a33" : "#fffff",
+          color: isDark ? "#fffff" : "#00000",
+          //borderColor: isDark ? "#555" : "#ddd",
+        }),
+        menu: (base) => ({
+          ...base,
+          backgroundColor: isDark ? "#2b2a33" : "#fff",
+          color: isDark ? "#fff" : "#000",
+        }),
+        option: (base, { isFocused, isSelected }) => ({
+          ...base,
+          backgroundColor: isSelected
+            ? isDark
+              ? "#66666"
+              : "#ddddd"
+            : isFocused
+            ? isDark
+              ? "#55555"
+              : "#ccccc"
+            : "transparent",
+          color: isDark ? "#fffff" : "#00000",
+        }),
+    };
 
     // handleSubmit
     const handleSubmit = (event) => {
@@ -96,6 +136,7 @@ function EventManagementForm() {
                     value={requiredSkills}
                     onChange={(selected) => setRequiredSkills(selected)}
                     required
+                    styles={lightdark}
                     />
                 </label>
             </div>
@@ -107,6 +148,7 @@ function EventManagementForm() {
                     value={urgencyOptions.find((option) => option.value === urgency)}
                     onChange={(selected) => setUrgency(selected.value)}
                     required
+                    styles={lightdark}
                     />
                 </label>
             </div>
