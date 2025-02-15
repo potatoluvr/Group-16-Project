@@ -27,9 +27,6 @@ function EventManagementForm() {
     { value: "high", label: "High" },
   ];
 
-  // handleSubmit
-  const handleSubmit = (event) => {
-    event.preventDefault();
     // dark light styling
     const [isDark, setIsDark] = useState(
       window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -48,12 +45,11 @@ function EventManagementForm() {
         ...base,
         backgroundColor: isDark ? "#2b2a33" : "#fffff",
         color: isDark ? "#fffff" : "#00000",
-        //borderColor: isDark ? "#555" : "#ddd",
       }),
       menu: (base) => ({
         ...base,
-        backgroundColor: isDark ? "#2b2a33" : "#fff",
-        color: isDark ? "#fff" : "#000",
+        backgroundColor: isDark ? "#2b2a33" : "#fffff",
+        color: isDark ? "#fffff" : "#00000",
       }),
       option: (base, { isFocused, isSelected }) => ({
         ...base,
@@ -95,95 +91,7 @@ function EventManagementForm() {
         urgency,
         eventDate,
       };
-
-      return (
-        <form className="" onSubmit={handleSubmit}>
-          <div className="form-field">
-            <label>
-              Event Name (required):
-              <input
-                type="text"
-                value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
-                maxLength={100}
-                required
-                style={{ width: "100%", padding: "6px", fontSize: "16px" }}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Event Description (required):
-              <textarea
-                value={eventDescription}
-                onChange={(e) => setEventDescription(e.target.value)}
-                required
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  fontSize: "16px",
-                  minHeight: "100px",
-                }}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Location (required):
-              <textarea
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                required
-                style={{ width: "100%", padding: "8px", fontSize: "16px" }}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Required Skills (required):
-              <Select
-                isMulti
-                options={skillsOptions}
-                value={requiredSkills}
-                onChange={(selected) => setRequiredSkills(selected)}
-                required
-                styles={lightdark}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Urgency (required):
-              <Select
-                options={urgencyOptions}
-                value={urgencyOptions.find(
-                  (option) => option.value === urgency
-                )}
-                onChange={(selected) => setUrgency(selected.value)}
-                required
-                styles={lightdark}
-              />
-            </label>
-          </div>
-          <div>
-            <label>
-              Event Date (required):
-              <DatePicker
-                selected={eventDate}
-                onChange={(date) => setEventDate(date)}
-                dateFormat="yyyy-MM-dd"
-                required
-              />
-            </label>
-          </div>
-          <button>Submit</button>
-        </form>
-      );
     };
-
-    console.log("Event Data:", formData);
-    alert("Event submitted successfully!");
-  };
 
   return (
     <form className="" onSubmit={handleSubmit}>
@@ -236,6 +144,7 @@ function EventManagementForm() {
             value={requiredSkills}
             onChange={(selected) => setRequiredSkills(selected)}
             required
+            styles={lightdark}
           />
         </label>
       </div>
@@ -247,21 +156,30 @@ function EventManagementForm() {
             value={urgencyOptions.find((option) => option.value === urgency)}
             onChange={(selected) => setUrgency(selected.value)}
             required
+            styles={lightdark}
+            
           />
         </label>
       </div>
       <div>
         <label>
           Event Date (required):
+          <div className="event-date-container">
           <DatePicker
             selected={eventDate}
             onChange={(date) => setEventDate(date)}
             dateFormat="yyyy-MM-dd"
             required
+            className="event-date-input"
           />
+          </div>
         </label>
       </div>
-      <button>Submit</button>
+      <div style={{paddingTop: "8px"}}>
+        <button type="submit"> 
+          Submit
+        </button>
+      </div>
     </form>
   );
 }
