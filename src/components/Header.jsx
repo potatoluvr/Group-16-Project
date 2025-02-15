@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Notification from "./Notification";
 
 function Header() {
   return (
@@ -10,7 +9,6 @@ function Header() {
         <button>Event Management</button>
       </Link>
       <p>Header</p>
-      <Notification />
     </header>
   );
 }
