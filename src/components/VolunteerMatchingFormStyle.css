@@ -17,23 +17,69 @@ label {
   margin-bottom: 8px;
 }
 
-select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-button.button-match {
-  padding: 12px 20px;
-  background-color: #000000;
-  color: white;
-  border: none;
-  border-radius: 5px;
+/* Styling for the volunteer/event selection buttons */
+button.button-match-volunteer {
+  padding: 10px 15px;
+  font-size: 16px;
   cursor: pointer;
-  width: 100%;
+  border: 1px solid #ccc;
+  background-color: black; /* Set button background to black */
+  color: white; /* Set button text color to white for contrast */
+  border-radius: 4px;
+  width: 100%; /* Ensure the button takes up the full width */
+  text-align: left;
 }
 
-button.button-match:hover {
-  background-color: #0056b3;
+button.button-match-volunteer:hover {
+  background-color: #333; /* Slightly darker shade for hover effect */
+}
+
+.volunteer-matching-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 45%;
+}
+
+.volunteer-info {
+  margin-top: 15px;
+}
+
+/* Ensure the option item width matches the button */
+.option-list li {
+  padding: 10px 15px;
+  cursor: pointer;
+  background-color: black;
+  color: white;
+  border-radius: 4px;
+  width: 100%; /* Make sure the option items match the button width */
+  box-sizing: border-box; /* Include padding in width calculation */
+  margin: 5px 0;
+  border: none; /* Remove the white border */
+  list-style-type: none;
+}
+
+/* Ensure the option item width matches the button */
+.option-list li {
+  padding: 10px 15px;
+  cursor: pointer;
+  background-color: black;
+  color: white;
+  border-radius: 4px;
+  width: 100%; /* Make sure the option items match the button width */
+  box-sizing: border-box; /* Include padding in width calculation */
+  margin: 5px 0;
+}
+
+.option-list li:hover {
+  background-color: #333;
+}
+
+/* Styling for the selected volunteer/event information */
+.volunteer-info {
+  margin-top: 10px;
+}
+
+.volunteer-info p {
+  margin: 5px 0;
 }

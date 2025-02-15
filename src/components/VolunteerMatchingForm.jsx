@@ -1,20 +1,33 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./VolunteerMatchingFormStyle.css";
 
-// Placeholder
+// Placeholder functions
 const fetchVolunteers = () => {
-  // Fetch volunteers data from the database (placeholder)
   return [
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Jane Smith" },
+    { id: 1, name: "John Doe", skills: "Deploy, Code", preferences: "Night" },
+    {
+      id: 2,
+      name: "Jane Smith",
+      skills: "Packing, Assisting",
+      preferences: "Morning",
+    },
   ];
 };
 
 const fetchEvents = () => {
-  // Fetch events data from the database (placeholder)
   return [
-    { id: 1, title: "Blood Drive" },
-    { id: 2, title: "Donation" },
+    {
+      id: 1,
+      title: "Blood Drive",
+      description: "Saving lives",
+      skills: "Packing, Assisting",
+    },
+    {
+      id: 2,
+      title: "Donation",
+      description: "Donate",
+      skills: "Packing, Assisting",
+    },
   ];
 };
 
@@ -23,25 +36,52 @@ function VolunteerMatchingForm() {
   const [events, setEvents] = useState([]);
   const [selectedVolunteer, setSelectedVolunteer] = useState("");
   const [selectedEvent, setSelectedEvent] = useState("");
+  const [volunteerDetails, setVolunteerDetails] = useState({
+    skills: "",
+    preferences: "",
+  });
+  const [eventDetails, setEventDetails] = useState({
+    description: "",
+    skills: "",
+  });
+  const [showVolunteerList, setShowVolunteerList] = useState(false);
+  const [showEventList, setShowEventList] = useState(false);
 
   useEffect(() => {
-    // Fetch data when the component is mounted
     setVolunteers(fetchVolunteers());
     setEvents(fetchEvents());
   }, []);
 
-  const handleVolunteerChange = (e) => {
-    setSelectedVolunteer(e.target.value);
+  const handleVolunteerSelect = (volunteerId) => {
+    setSelectedVolunteer(volunteerId);
+
+    const selected = volunteers.find(
+      (volunteer) => volunteer.id === parseInt(volunteerId)
+    );
+    if (selected) {
+      setVolunteerDetails({
+        skills: selected.skills,
+        preferences: selected.preferences,
+      });
+    }
+    setShowVolunteerList(false); // Close the volunteer list after selection
   };
 
-  const handleEventChange = (e) => {
-    setSelectedEvent(e.target.value);
+  const handleEventSelect = (eventId) => {
+    setSelectedEvent(eventId);
+
+    const selected = events.find((event) => event.id === parseInt(eventId));
+    if (selected) {
+      setEventDetails({
+        description: selected.description,
+        skills: selected.skills,
+      });
+    }
+    setShowEventList(false); // Close the event list after selection
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Submit logic here to match the volunteer to the event
-    // Send the matching data to the backend to update the volunteer's profile or event assignment
     console.log(
       "Matched Volunteer:",
       selectedVolunteer,
@@ -53,41 +93,75 @@ function VolunteerMatchingForm() {
   return (
     <form onSubmit={handleSubmit} className="volunteer-matching-form">
       <div className="form-group">
-        <label htmlFor="volunteer">Volunteer Name</label>
-        <select
-          id="volunteer"
-          value={selectedVolunteer}
-          onChange={handleVolunteerChange}
-          required
+        <label>Select Volunteer</label>
+        <button
+          type="button"
+          onClick={() => setShowVolunteerList(!showVolunteerList)}
         >
-          <option value="" disabled>
-            Select Volunteer
-          </option>
-          {volunteers.map((volunteer) => (
-            <option key={volunteer.id} value={volunteer.id}>
-              {volunteer.name}
-            </option>
-          ))}
-        </select>
+          {selectedVolunteer
+            ? volunteers.find((v) => v.id === parseInt(selectedVolunteer)).name
+            : "Choose Volunteer"}
+        </button>
+
+        {showVolunteerList && (
+          <ul className="option-list">
+            {volunteers.map((volunteer) => (
+              <li
+                key={volunteer.id}
+                onClick={() => handleVolunteerSelect(volunteer.id)}
+              >
+                {volunteer.name}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {selectedVolunteer && (
+          <div className="volunteer-info">
+            <p>
+              <strong>Skills:</strong>{" "}
+              {volunteerDetails.skills || "Not specified"}
+            </p>
+            <p>
+              <strong>Preferences:</strong>{" "}
+              {volunteerDetails.preferences || "Not specified"}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="form-group">
-        <label htmlFor="event">Matched Event</label>
-        <select
-          id="event"
-          value={selectedEvent}
-          onChange={handleEventChange}
-          required
-        >
-          <option value="" disabled>
-            Select Event
-          </option>
-          {events.map((event) => (
-            <option key={event.id} value={event.id}>
-              {event.title}
-            </option>
-          ))}
-        </select>
+        <label>Select Event</label>
+        <button type="button" onClick={() => setShowEventList(!showEventList)}>
+          {selectedEvent
+            ? events.find((e) => e.id === parseInt(selectedEvent)).title
+            : "Choose Event"}
+        </button>
+
+        {showEventList && (
+          <ul className="option-list">
+            {events.map((event) => (
+              <li key={event.id} onClick={() => handleEventSelect(event.id)}>
+                <strong>{event.title}</strong>
+                <p style={{ fontSize: "smaller" }}>{event.description}</p>
+                <p style={{ fontSize: "smaller" }}>
+                  <strong>Skills:</strong> {event.skills}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {selectedEvent && (
+          <div className="event-info">
+            <p>
+              <strong>Description:</strong> {eventDetails.description}
+            </p>
+            <p>
+              <strong>Skills:</strong> {eventDetails.skills}
+            </p>
+          </div>
+        )}
       </div>
 
       <button type="submit" className="button-match">
