@@ -48,12 +48,11 @@ function EventManagementForm() {
         ...base,
         backgroundColor: isDark ? "#2b2a33" : "#fffff",
         color: isDark ? "#fffff" : "#00000",
-        //borderColor: isDark ? "#555" : "#ddd",
       }),
       menu: (base) => ({
         ...base,
-        backgroundColor: isDark ? "#2b2a33" : "#fff",
-        color: isDark ? "#fff" : "#000",
+        backgroundColor: isDark ? "#2b2a33" : "#fffff",
+        color: isDark ? "#fffff" : "#00000",
       }),
       option: (base, { isFocused, isSelected }) => ({
         ...base,
@@ -253,15 +252,22 @@ function EventManagementForm() {
       <div>
         <label>
           Event Date (required):
+          <div className="event-date-container">
           <DatePicker
             selected={eventDate}
             onChange={(date) => setEventDate(date)}
             dateFormat="yyyy-MM-dd"
             required
+            className="event-date-input"
           />
+          </div>
         </label>
       </div>
-      <button>Submit</button>
+      <div style={{paddingTop: "8px"}}>
+        <button type="submit"> 
+          Submit
+        </button>
+      </div>
     </form>
   );
 }
