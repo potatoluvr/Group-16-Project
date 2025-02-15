@@ -23,15 +23,15 @@ button.button-match-volunteer {
   font-size: 16px;
   cursor: pointer;
   border: 1px solid #ccc;
-  background-color: black; /* Set button background to black */
-  color: white; /* Set button text color to white for contrast */
+  background-color: black;
+  color: white;
   border-radius: 4px;
-  width: 100%; /* Ensure the button takes up the full width */
+  width: 100%;
   text-align: left;
 }
 
 button.button-match-volunteer:hover {
-  background-color: #333; /* Slightly darker shade for hover effect */
+  background-color: #333;
 }
 
 .volunteer-matching-container {
@@ -52,23 +52,11 @@ button.button-match-volunteer:hover {
   background-color: black;
   color: white;
   border-radius: 4px;
-  width: 100%; /* Make sure the option items match the button width */
-  box-sizing: border-box; /* Include padding in width calculation */
+  width: 100%;
+  box-sizing: border-box;
   margin: 5px 0;
-  border: none; /* Remove the white border */
+  border: none;
   list-style-type: none;
-}
-
-/* Ensure the option item width matches the button */
-.option-list li {
-  padding: 10px 15px;
-  cursor: pointer;
-  background-color: black;
-  color: white;
-  border-radius: 4px;
-  width: 100%; /* Make sure the option items match the button width */
-  box-sizing: border-box; /* Include padding in width calculation */
-  margin: 5px 0;
 }
 
 .option-list li:hover {
