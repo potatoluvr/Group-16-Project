@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -30,6 +31,8 @@ const skillsOptions = [
 ];
 
 function UserProfileForm() {
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     fullName: "",
     address1: "",
@@ -55,26 +58,28 @@ function UserProfileForm() {
     setFormData({ ...formData, availability: dates });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!formData.fullName || !formData.address1 || !formData.city || !formData.state || !formData.zipCode || formData.skills.length === 0 || formData.availability.length === 0) {
-      setErrorMessage("All required fields must be filled out.");
-      return;
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+  
+    try {
+      const response = await fetch("http://localhost:5000/users/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: 2, ...formData }), // Replace 2 with actual user ID
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        alert("Profile updated successfully!");
+        navigate("/user-profile");
+      } else {
+        setErrorMessage(data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage("Server error. Please try again.");
     }
-
-    if (formData.fullName.length > 50 || formData.city.length > 100 || formData.address1.length > 100 || (formData.address2 && formData.address2.length > 100)) {
-      setErrorMessage("Some fields exceed the character limit.");
-      return;
-    }
-
-    if (formData.zipCode.length < 5 || formData.zipCode.length > 9) {
-      setErrorMessage("Zip code must be between 5 and 9 characters.");
-      return;
-    }
-
-    console.log("User Profile Data:", formData);
-    alert("Profile updated successfully!");
   };
 
   return (
