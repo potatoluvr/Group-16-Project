@@ -2,6 +2,9 @@ import request from "supertest";
 import app from "../index";
 
 describe("Volunteer Matching API", () => {
+  let volunteerId;
+  let eventId;
+  
   it("should match a volunteer to an event", async () => {
     const res = await request(app).post("/api/volunteers/match").send({
       volunteerId,
