@@ -53,9 +53,10 @@ function LoginForm() {
       if (response.status === 200) {
         // Save the token
         localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", data.userId);  // Save userID
 
-        // Redirect to user profile
-        navigate("/user-profile");
+        // Redirect based on role
+        navigate(data.role === "admin" ? "/event-management" : "/user-profile");
       } else {
         setErrorMessage(data.message || "Login failed, please try again.");
       }
