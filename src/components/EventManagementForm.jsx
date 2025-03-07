@@ -67,30 +67,27 @@ function EventManagementForm() {
     };
 
     // handleSubmit
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
       event.preventDefault();
-
-      // valid check
-      if (
-        !eventName ||
-        !eventDescription ||
-        !location ||
-        !requiredSkills.length ||
-        !urgency ||
-        !eventDate
-      ) {
-        alert("Please fill out all required fields.");
-        return;
+    
+      try {
+        const response = await fetch("http://localhost:5000/events/create-event", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ eventName, eventDescription, requiredSkills, urgency }),
+        });
+    
+        const data = await response.json();
+    
+        if (data.success) {
+          alert("Event created successfully!");
+        } else {
+          setErrorMessage("Failed to create event.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setErrorMessage("Server error. Please try again.");
       }
-
-      const eventData = {
-        eventName,
-        eventDescription,
-        location,
-        requiredSkills,
-        urgency,
-        eventDate,
-      };
     };
 
   return (
