@@ -1,36 +1,6 @@
 import { useState, useEffect } from "react";
 import "./VolunteerMatchingFormStyle.css";
 
-// Placeholder functions
-const fetchVolunteers = () => {
-  return [
-    { id: 1, name: "John Doe", skills: "Deploy, Code", preferences: "Night" },
-    {
-      id: 2,
-      name: "Jane Smith",
-      skills: "Packing, Assisting",
-      preferences: "Morning",
-    },
-  ];
-};
-
-const fetchEvents = () => {
-  return [
-    {
-      id: 1,
-      title: "Blood Drive",
-      description: "Saving lives",
-      skills: "Packing, Assisting",
-    },
-    {
-      id: 2,
-      title: "Donation",
-      description: "Donate",
-      skills: "Packing, Assisting",
-    },
-  ];
-};
-
 function VolunteerMatchingForm() {
   const [volunteers, setVolunteers] = useState([]);
   const [events, setEvents] = useState([]);
@@ -46,10 +16,18 @@ function VolunteerMatchingForm() {
   });
   const [showVolunteerList, setShowVolunteerList] = useState(false);
   const [showEventList, setShowEventList] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    setVolunteers(fetchVolunteers());
-    setEvents(fetchEvents());
+    fetch("http://localhost:5000/volunteers")
+      .then((response) => response.json())
+      .then((data) => setVolunteers(data))
+      .catch((error) => console.error("Error fetching volunteers:", error));
+  
+    fetch("http://localhost:5000/events")
+      .then((response) => response.json())
+      .then((data) => setEvents(data))
+      .catch((error) => console.error("Error fetching events:", error));
   }, []);
 
   const handleVolunteerSelect = (volunteerId) => {
@@ -80,14 +58,27 @@ function VolunteerMatchingForm() {
     setShowEventList(false); // Close the event list after selection
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(
-      "Matched Volunteer:",
-      selectedVolunteer,
-      "to Event:",
-      selectedEvent
-    );
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+  
+    try {
+      const response = await fetch("http://localhost:5000/volunteers/match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ volunteerId: selectedVolunteer, eventId: selectedEvent }),
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        alert("Volunteer matched successfully!");
+      } else {
+        setErrorMessage("Failed to match volunteer.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage("Server error. Please try again.");
+    }
   };
 
   return (
