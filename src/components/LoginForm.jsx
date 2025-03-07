@@ -9,8 +9,8 @@ function LoginForm() {
 
   // Validate email
   const validateEmail = (email) => {
-    const validEmails = ["admin@gmail.com", "volunteer@gmail.com"];
-    return validEmails.includes(email);
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return emailPattern.test(email);
   };
 
   // Validate password length
@@ -19,7 +19,7 @@ function LoginForm() {
   };
 
   // Handle form submission
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     // Check if the email is valid
@@ -38,16 +38,31 @@ function LoginForm() {
 
     setErrorMessage(""); // Clear error message if both email and password are valid
 
-    // TODO: replace with an actual check
-    const isProfileComplete = false; // Assume profile needs completion 
-  
-    // Redirect user to complete profile if not completed
-    if (!isProfileComplete) {
-      navigate("/user-profile/edit");
-    } else {
-      navigate("/user-profile"); // Navigate to the user profile page
-    }
+    try {
+      // Send data to the back end using fetch
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }), // Convert data to JSON string
+      });
 
+      const data = await response.json(); // Parse JSON response
+
+      if (response.status === 200) {
+        // Save the token
+        localStorage.setItem("token", data.token);
+
+        // Redirect to user profile
+        navigate("/user-profile");
+      } else {
+        setErrorMessage(data.message || "Login failed, please try again.");
+      }
+    } catch (error) {
+      setErrorMessage("An error occurred. Please try again later.");
+      console.error("Login error:", error);
+    }
   };
 
   // Handle sign-up button click

@@ -11,8 +11,8 @@ function SignUpForm() {
 
   // Validate email
   const validateEmail = (email) => {
-    const validEmails = ["admin@gmail.com", "volunteer@gmail.com"];
-    return validEmails.includes(email);
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return emailPattern.test(email);
   };
 
   // Validate password length
@@ -20,7 +20,7 @@ function SignUpForm() {
     return password.length > 7; // Password must be longer than 7 characters
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     // Check if the email is valid
@@ -45,11 +45,28 @@ function SignUpForm() {
 
     setErrorMessage(""); // Clear error message if everything is valid
 
-    // Simulate the signup process (placeholder)
-    console.log("Sign Up Successful!", { email, password });
+    try {
+      // Send data to the back end using fetch
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }), // Convert data to JSON string
+      });
 
-    // Redirect to UserProfileManagement page upon successful signup
-    navigate("/user-profile/edit");
+      const data = await response.json(); // Parse JSON response
+
+      if (response.status === 201) {
+        // User registered successfully, redirect to user profile edit
+        navigate("/user-profile/edit");
+      } else {
+        setErrorMessage(data.message || "Signup failed, please try again.");
+      }
+    } catch (error) {
+      setErrorMessage("An error occurred. Please try again later.");
+      console.error("Signup error:", error);
+    }
   };
 
   return (
