@@ -1,20 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function UserProfile() {
   const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Replace with actual user data from database
-  const [userData, setUserData] = useState({
-    fullName: "John Doe",
-    address1: "123 Bellaire",
-    city: "Houston",
-    state: "TX",
-    zipCode: "77001",
-    skills: ["Teamwork", "Problem-Solving"],
-    availability: ["2025-03-15", "2025-03-20"],
-    profileComplete: true, 
-  });
+  // Function to get userId from token or localStorage
+const getUserId = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const decodedToken = JSON.parse(atob(token.split(".")[1])); // Decode JWT payload
+    return decodedToken.userId;
+  } catch (error) {
+    console.error("Invalid token:", error);
+    return null;
+  }
+};
+
+useEffect(() => {
+  const userId = getUserId();
+  if (!userId) {
+    setErrorMessage("User not found. Please log in again.");
+    setLoading(false);
+    return;
+  }
+
+  fetch(`http://localhost:5000/api/users/${userId}`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        setUserData(data.profile);
+      } else {
+        setErrorMessage("Failed to load profile data.");
+      }
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error fetching profile:", error);
+      setErrorMessage("Server error. Please try again.");
+      setLoading(false);
+    });
+}, []);
+
+  if (loading) return <p>Loading profile...</p>;
+  if (errorMessage) return <p className="error-message">{errorMessage}</p>;
 
   return (
     <div className="user-profile-container">
