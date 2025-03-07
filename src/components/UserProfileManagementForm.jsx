@@ -62,10 +62,10 @@ function UserProfileForm() {
     event.preventDefault();
   
     try {
-      const response = await fetch("http://localhost:5000/users/update", {
+      const response = await fetch("http://localhost:5000/api/users/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: 2, ...formData }), // Replace 2 with actual user ID
+        body: JSON.stringify({ id: userId, ...formData }), 
       });
   
       const data = await response.json();
