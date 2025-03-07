@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import volunteerRoutes from "./routes/volunteerRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -20,6 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/volunteers", volunteerRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Start the server
 if (process.env.NODE_ENV !== "test") {

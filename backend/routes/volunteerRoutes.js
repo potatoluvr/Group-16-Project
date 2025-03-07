@@ -1,5 +1,8 @@
 const express = require("express");
-const { getVolunteerHistory, matchVolunteer } = require("../controllers/volunteerController");
+const {
+  getVolunteerHistory,
+  matchVolunteer,
+} = require("../controllers/volunteerController");
 
 const router = express.Router();
 
