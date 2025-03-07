@@ -19,12 +19,12 @@ function VolunteerMatchingForm() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/volunteers")
+    fetch("http://localhost:5000/api/volunteers")
       .then((response) => response.json())
       .then((data) => setVolunteers(data))
       .catch((error) => console.error("Error fetching volunteers:", error));
   
-    fetch("http://localhost:5000/events")
+    fetch("http://localhost:5000/api/events")
       .then((response) => response.json())
       .then((data) => setEvents(data))
       .catch((error) => console.error("Error fetching events:", error));
@@ -62,7 +62,7 @@ function VolunteerMatchingForm() {
     event.preventDefault();
   
     try {
-      const response = await fetch("http://localhost:5000/volunteers/match", {
+      const response = await fetch("http://localhost:5000/api/volunteers/match", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ volunteerId: selectedVolunteer, eventId: selectedEvent }),
