@@ -23,12 +23,4 @@ app.use("/api/users", userRoutes);
 app.use("/api/volunteers", volunteerRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-// Start the server
-if (process.env.NODE_ENV !== "test") {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-}
-
 export default app;

@@ -53,7 +53,8 @@ function LoginForm() {
       if (response.status === 200) {
         // Save the token
         localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", data.userId);  // Save userID
+        localStorage.setItem("userId", data.userId); // Save userID
+        localStorage.setItem("role", data.role); // Save user role
 
         // Redirect based on role
         navigate(data.role === "admin" ? "/event-management" : "/user-profile");
