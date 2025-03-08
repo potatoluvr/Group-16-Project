@@ -51,7 +51,27 @@ export const loginUser = (req, res) => {
       .json({ message: "Password must be at least 8 characters" });
   }
 
-  // Simulate login and return a token
-  const token = "fake-jwt-token";
-  return res.status(200).json({ token });
+  // Simulate a valid user login (hardcoded)
+  const user = users.find((user) => user.email === email);
+
+  // If no user is found, return an error
+  if (!user) {
+    return res.status(401).json({ message: "Invalid email or password" });
+  }
+
+  // Add real password validation here
+  if (user.password !== password) {
+    return res.status(401).json({ message: "Invalid email or password" });
+  }
+
+  // Generate JWT token (use user's email as payload for now)
+  const token = jwt.sign({ email: user.email }, "your_jwt_secret_key", {
+    expiresIn: "1h",
+  });
+
+  // Return the generated token in the response
+  return res.status(200).json({
+    message: "Login successful",
+    token: token,
+  });
 };
