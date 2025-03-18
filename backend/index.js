@@ -6,11 +6,15 @@ import eventRoutes from "./routes/eventRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import volunteerRoutes from "./routes/volunteerRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import connectDB from "./database.js";
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
+
+// Load Database
+connectDB();
 
 // Middleware
 app.use(express.json());
