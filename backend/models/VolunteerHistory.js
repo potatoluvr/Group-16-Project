@@ -21,6 +21,6 @@ const VolunteerHistorySchema = new mongoose.Schema({
   }
 });
 
-const VolunteerHistory = mongoose.model("VolunteerHistory", VolunteerHistorySchema);
+const VolunteerHistory = mongoose.model("VolunteerHistory", VolunteerHistorySchema, 'volunteerhistories');
 
 export { VolunteerHistory };

@@ -12,6 +12,6 @@ const EventSchema = new mongoose.Schema({
   date: Date,
 });
 
-const Event = mongoose.model("Event", EventSchema);
+const Event = mongoose.model("Event", EventSchema, 'events');
 
 export { Event };
