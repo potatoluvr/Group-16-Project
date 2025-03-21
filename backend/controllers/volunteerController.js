@@ -1,71 +1,51 @@
-const users = [
-  { id: 1, email: "admin@gmail.com", role: "admin" },
-  { id: 2, email: "volunteer@gmail.com", role: "volunteer" },
-];
-
-const events = [
-  {
-    id: 1,
-    title: "Community Cleanup",
-    requiredSkills: ["Teamwork"],
-    urgency: "High",
-  },
-  {
-    id: 2,
-    title: "Food Drive",
-    requiredSkills: ["Organization"],
-    urgency: "Medium",
-  },
-];
-
-const volunteerHistory = [
-  {
-    volunteerId: 2,
-    eventId: 1,
-    status: "Completed",
-    eventTitle: "Community Cleanup",
-  },
-];
+const VolunteerHistory = require("../models/VolunteerHistory");
+const User = require("../models/User");
+const Event = require("../models/Event");
 
 // Get Volunteer History
-export function getVolunteerHistory(req, res) {
-  const volunteerId = parseInt(req.params.id);
-  const history = volunteerHistory.filter(
-    (entry) => entry.volunteerId === volunteerId
-  );
+exports.getVolunteerHistory = async (req, res) => {
+  try {
+    const volunteerId = req.params.id;
+    const history = await VolunteerHistory.find({ volunteerId }).populate("eventId");
 
-  if (!history.length) {
-    return res
-      .status(404)
-      .json({ success: false, message: "No volunteer history found." });
+    if (!history.length) {
+      return res.status(404).json({ success: false, message: "No volunteer history found." });
+    }
+
+    res.json({ success: true, history });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
   }
-
-  res.json({ success: true, history });
-}
+};
 
 // Match Volunteer to Event
-export function matchVolunteer(req, res) {
-  const { volunteerId, eventId } = req.body;
+exports.matchVolunteer = async (req, res) => {
+  try {
+    const { volunteerId, eventId } = req.body;
 
-  const volunteer = users.find((user) => user.id === volunteerId);
-  const event = events.find((ev) => ev.id === eventId);
+    // Ensure volunteerId exists in User collection
+    const volunteer = await User.findById(volunteerId);
+    if (!volunteer || volunteer.role !== "volunteer") {
+      return res.status(400).json({ success: false, message: "Invalid volunteer ID" });
+    }
 
-  if (!volunteer || !event) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Invalid volunteer or event." });
+    // Ensure eventId exists in Event collection
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(400).json({ success: false, message: "Invalid event ID" });
+    }
+
+    // Create a new volunteer-event match entry
+    const newMatch = new VolunteerHistory({
+      volunteerId,
+      eventId,
+      status: "Upcoming",
+    });
+    await newMatch.save();
+
+    res.json({ success: true, message: "Volunteer matched successfully!" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
   }
+};
 
-  // Add entry to volunteer history
-  volunteerHistory.push({
-    volunteerId,
-    eventId,
-    status: "Upcoming",
-    eventTitle: event.title,
-  });
-
-  res.json({
-    success: true,
-    message: `Volunteer matched to event: ${event.title}`,
-  });
-}
