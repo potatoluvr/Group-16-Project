@@ -6,6 +6,7 @@ import eventRoutes from "./routes/eventRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import volunteerRoutes from "./routes/volunteerRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import notFound from "./routes/404.js";
 import connectDB from "./database.js";
 
 // Load environment variables
@@ -29,5 +30,6 @@ app.use("/api/events", eventRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/volunteers", volunteerRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("*", notFound);
 
 export default app;

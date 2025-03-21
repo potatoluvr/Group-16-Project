@@ -10,6 +10,7 @@ function EventManagementForm() {
   const [requiredSkills, setRequiredSkills] = useState("");
   const [urgency, setUrgency] = useState("");
   const [eventDate, setEventDate] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // skills (multi-select dropdown)
   const skillsOptions = [
@@ -71,7 +72,7 @@ function EventManagementForm() {
       event.preventDefault();
     
       try {
-        const response = await fetch("http://localhost:5000/events/create-event", {
+        const response = await fetch("http://localhost:5000/api/events/create-event", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ eventName, eventDescription, requiredSkills, urgency }),
@@ -177,6 +178,7 @@ function EventManagementForm() {
           Submit
         </button>
       </div>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </form>
   );
 }
