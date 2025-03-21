@@ -1,3 +1,5 @@
+import { UserCredentials, UserProfile } from "../models/User.js";
+
 const users = [
   {
     id: 1,
@@ -32,37 +34,55 @@ const users = [
 ];
 
 // Get User Profile
-export function getUserProfile(req, res) {
-  const userId = parseInt(req.params.id);
-  const user = users.find((u) => u.id === userId);
+export async function getUserProfile(req, res) {
+  try {
+    const userId = req.user?.userId;
 
-  if (!user) {
-    return res.status(404).json({ success: false, message: "User not found" });
+    const profile = await UserProfile.findOne({ userId });
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+
+    return res.status(200).json(profile);
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    return res.status(500).json({ message: "Server error" });
   }
-
-  res.json({ success: true, profile: user.profile });
 }
 
 // Update User Profile
-export function updateUserProfile(req, res) {
-  const { id, fullName, address, city, state, zipCode, skills, availability } =
-    req.body;
-  const user = users.find((u) => u.id === id);
+export async function createUserProfile(req, res) {
+  try {
+    const userId = req.user.userId;
 
-  if (!user) {
-    return res.status(404).json({ success: false, message: "User not found" });
+    let profile = await UserProfile.findOne({ userId });
+    if (profile) {
+      return res.status(400).json({ message: "Profile already exists." });
+    }
+
+    profile = new UserProfile({
+      userId,
+      fullName: req.body.fullName,
+      address1: req.body.address1,
+      address2: req.body.address2,
+      city: req.body.city,
+      state: req.body.state,
+      zipCode: req.body.zipCode,
+      skills: req.body.skills,
+      preferences: req.body.preferences,
+      availability: req.body.availability,
+    });
+    await profile.save();
+
+    await UserCredentials.findByIdAndUpdate(userId, {
+      profileCompleted: true,
+    });
+
+    return res
+      .status(200)
+      .json({ message: "Profile updated successfully", profile });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    return res.status(500).json({ message: "Server error" });
   }
-
-  // Update profile
-  user.profile = {
-    fullName,
-    address,
-    city,
-    state,
-    zipCode,
-    skills,
-    availability,
-  };
-
-  res.json({ success: true, message: "Profile updated successfully!" });
 }
