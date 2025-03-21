@@ -1,4 +1,4 @@
-const Event = require("../models/Event");
+import { Event } from "../models/Event.js";
 
 const events = [
   {
@@ -16,7 +16,7 @@ const events = [
 ];
 
 // Create Event
-exports.createEvent = async (req, res) => {
+export const createEvent = async (req, res) => {
   try {
     const newEvent = new Event(req.body); 
     await newEvent.save(); // Saves to MongoDB
@@ -27,7 +27,7 @@ exports.createEvent = async (req, res) => {
 };
 
 // Get All Events
-exports.getEvents = async (req, res) => {
+export const getEvents = async (req, res) => {
   try {
     const events = await Event.find();
     res.json(events);

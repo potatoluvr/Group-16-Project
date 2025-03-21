@@ -1,9 +1,9 @@
-const VolunteerHistory = require("../models/VolunteerHistory");
-const User = require("../models/User");
-const Event = require("../models/Event");
+import { VolunteerHistory } from "../models/VolunteerHistory.js";
+import { UserCredentials, UserProfile } from "../models/User.js";
+import { Event } from "../models/Event.js";
 
 // Get Volunteer History
-exports.getVolunteerHistory = async (req, res) => {
+export const getVolunteerHistory = async (req, res) => {
   try {
     const volunteerId = req.params.id;
     const history = await VolunteerHistory.find({ volunteerId }).populate("eventId");
@@ -19,7 +19,7 @@ exports.getVolunteerHistory = async (req, res) => {
 };
 
 // Match Volunteer to Event
-exports.matchVolunteer = async (req, res) => {
+export const matchVolunteer = async (req, res) => {
   try {
     const { volunteerId, eventId } = req.body;
 

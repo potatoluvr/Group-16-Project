@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const VolunteerHistorySchema = new mongoose.Schema({
   volunteerId: { 
@@ -21,4 +21,6 @@ const VolunteerHistorySchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("VolunteerHistory", VolunteerHistorySchema);
+const VolunteerHistory = mongoose.model("VolunteerHistory", VolunteerHistorySchema);
+
+export { VolunteerHistory };
