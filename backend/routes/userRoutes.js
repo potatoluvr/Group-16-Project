@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getUserProfile,
   createUserProfile,
+  updateUserProfile,
 } from "../controllers/userController.js";
 import verifyToken from "../middleware/verifyToken.js";
 
@@ -12,5 +13,6 @@ router.get("/:id", getUserProfile);
 
 // Route to update user profile
 router.post("/create", verifyToken, createUserProfile);
+router.post("/update", verifyToken, updateUserProfile);
 
 export default router;

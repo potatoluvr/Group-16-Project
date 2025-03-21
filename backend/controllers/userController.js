@@ -86,3 +86,37 @@ export async function createUserProfile(req, res) {
     return res.status(500).json({ message: "Server error" });
   }
 }
+
+export async function updateUserProfile(req, res) {
+  try {
+    const userId = req.user.userId;
+
+    let profile = await UserProfile.find({ userId });
+    if (!profile) {
+      return res.status(400).json({ message: "Profile not found" });
+    }
+
+    profile = await UserProfile.findOneAndUpdate(
+      { userId },
+      {
+        fullName: req.body.fullName,
+        address1: req.body.address1,
+        address2: req.body.address2,
+        city: req.body.city,
+        state: req.body.state,
+        zipCode: req.body.zipCode,
+        skills: req.body.skills,
+        preferences: req.body.preferences,
+        availability: req.body.availability,
+      },
+      { new: true }
+    );
+
+    return res
+      .status(200)
+      .json({ message: "Profile updated successfully", profile });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
