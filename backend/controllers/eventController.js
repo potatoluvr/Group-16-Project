@@ -1,3 +1,5 @@
+const Event = require("../models/Event");
+
 const events = [
   {
     id: 1,
@@ -13,19 +15,23 @@ const events = [
   },
 ];
 
-export function getEvents(req, res) {
-  res.json(events);
-}
+// Create Event
+exports.createEvent = async (req, res) => {
+  try {
+    const newEvent = new Event(req.body); 
+    await newEvent.save(); // Saves to MongoDB
+    res.json({ success: true, message: "Event created successfully!", event: newEvent });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 
-export function createEvent(req, res) {
-  const { title, description, requiredSkills, urgency } = req.body;
-  const newEvent = {
-    id: events.length + 1,
-    title,
-    description,
-    requiredSkills,
-    urgency,
-  };
-  events.push(newEvent);
-  res.json({ success: true, message: "Event created successfully!" });
-}
+// Get All Events
+exports.getEvents = async (req, res) => {
+  try {
+    const events = await Event.find();
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
