@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { UserCredentials } from "../models/User.js";
 
 // Hardcoded users (placeholder)
 const users = [
@@ -11,23 +12,39 @@ const users = [
 ];
 
 // Register user (placeholder)
-export const registerUser = (req, res) => {
-  const { email, password } = req.body;
+export const registerUser = async (req, res) => {
+  try {
+    const { email, password, role } = req.body;
 
-  // Check if email is valid
-  if (email !== "admin@gmail.com" && email !== "volunteer@gmail.com") {
-    return res.status(400).json({ message: "Invalid email address" });
+    // Check if email is valid
+    if (!email || !email.includes("@")) {
+      return res.status(400).json({ message: "Invalid email address" });
+    }
+
+    // Check password length
+    if (!password || password.length < 8) {
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 8 characters" });
+    }
+
+    const existingUser = await UserCredentials.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already registered" });
+    }
+
+    const user = new UserCredentials({
+      email,
+      password,
+      role: role || "volunteer",
+    });
+    await user.save();
+
+    return res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error("Registration form", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-
-  // Check password length
-  if (password.length < 8) {
-    return res
-      .status(400)
-      .json({ message: "Password must be at least 8 characters" });
-  }
-
-  // Simulate a successful registration (no database)
-  return res.status(201).json({ message: "User registered successfully" });
 };
 
 // Login user (placeholder)

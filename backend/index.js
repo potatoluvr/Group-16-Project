@@ -19,6 +19,9 @@ connectDB();
 // Middleware
 app.use(express.json());
 app.use(cors());
+app.get("/", (req, res) => {
+  res.send("Hello");
+});
 
 // Routes
 app.use("/api/auth", authRoutes);
