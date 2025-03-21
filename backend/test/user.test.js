@@ -1,5 +1,45 @@
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import { UserCredentials } from "../models/User"; // Ensure the correct path
 import request from "supertest";
 import app from "../index";
+
+describe("User Password Hashing", () => {
+  let userId;
+  const userData = {
+    email: "testuser@example.com",
+    password: "PlainTextPass123",
+    role: "volunteer",
+  };
+
+  it("should hash the password before saving", async () => {
+    // Step 1: Create user
+    const res = await request(app).post("/api/auth/register").send(userData);
+    expect(res.status).toBe(201);
+    expect(res.body).toHaveProperty("success", true);
+    userId = res.body.userId;
+
+    // Step 2: Fetch user from DB
+    const createdUser = await UserCredentials.findOne({
+      email: userData.email,
+    });
+
+    expect(createdUser).toBeDefined();
+    expect(createdUser.password).not.toBe(userData.password); // Ensure hashing
+
+    // Step 3: Compare hashed password with plaintext
+    const isMatch = await bcrypt.compare(
+      userData.password,
+      createdUser.password
+    );
+    expect(isMatch).toBe(true);
+  });
+
+  afterAll(async () => {
+    await UserCredentials.deleteMany({ email: userData.email }); // Cleanup
+    await mongoose.connection.close();
+  });
+});
 
 describe("User Profile API", () => {
   let userId = 1;
