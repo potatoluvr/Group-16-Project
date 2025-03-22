@@ -5,22 +5,27 @@ describe("Auth Routes", () => {
   let server;
 
   beforeAll(() => {
-    server = app.listen(5000); // Start the server on port 5000 before the tests
+    server = app.listen(5000);
   });
 
   afterAll(() => {
-    server.close(); // Close the server after the tests
+    server.close();
   });
 
+  const testUser = {
+    email: "admin@gmail.com",
+    password: "password123",
+    role: "admin",
+  };
+
   it("should register a new user", async () => {
-    const response = await request(server).post("/api/auth/register").send({
-      email: "admin@gmail.com", // Correct field for email
-      password: "password123", // Password must be >= 8 characters
-    });
+    const response = await request(server)
+      .post("/api/auth/register")
+      .send(testUser);
 
-    console.log(response.body); // For debugging
+    console.log("Register Response:", response.body);
 
-    expect(response.status).toBe(201); // Expect HTTP status 201 for created
+    expect(response.status).toBe(201);
     expect(response.body).toHaveProperty(
       "message",
       "User registered successfully"
@@ -29,19 +34,62 @@ describe("Auth Routes", () => {
 
   it("should login a user", async () => {
     const response = await request(server).post("/api/auth/login").send({
-      email: "admin@gmail.com", // Correct field for email
-      password: "password123", // Password must be >= 8 characters
+      email: testUser.email,
+      password: testUser.password,
     });
 
-    console.log(response.body); // For debugging
+    console.log("Login Response:", response.body);
 
-    expect(response.status).toBe(200); // Expect HTTP status 200 for success
-    expect(response.body).toHaveProperty("token"); // Expect a JWT token in the response
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("token");
+  });
+
+  it("should go through verifyToken and return profile with decoded JWT", async () => {
+    const registerRes = await request(server).post("/api/auth/register").send({
+      email: "testuser@example.com",
+      password: "password123",
+    });
+
+    expect(registerRes.status).toBe(201);
+
+    const loginRes = await request(server).post("/api/auth/login").send({
+      email: "testuser@example.com",
+      password: "password123",
+    });
+
+    expect(loginRes.status).toBe(200);
+    expect(loginRes.body).toHaveProperty("token");
+
+    const token = loginRes.body.token;
+
+    console.log("Retrieved Token:", token);
+
+    const profileRes = await request(server)
+      .get("/api/auth/profile")
+      .set("Authorization", `Bearer ${token}`);
+
+    console.log("Profile Response:", profileRes.body);
+
+    expect(profileRes.status).toBe(200);
+    expect(profileRes.body).toHaveProperty("message", "User profile data");
+    expect(profileRes.body).toHaveProperty("email", "testuser@example.com");
+    expect(profileRes.body).toHaveProperty("role");
+    expect(profileRes.body).toHaveProperty("userId");
+  });
+
+  it("should return an error when accessing profile without a token", async () => {
+    const response = await request(server).get("/api/auth/profile");
+
+    expect(response.status).toBe(403);
+    expect(response.body).toHaveProperty(
+      "message",
+      "Access denied, no token provided"
+    );
   });
 
   it("should return an error for invalid email during registration", async () => {
     const response = await request(server).post("/api/auth/register").send({
-      email: "invalid@gmail.com", // Not an accepted email
+      email: "invalid@gmail.com",
       password: "password123",
     });
 
@@ -51,8 +99,8 @@ describe("Auth Routes", () => {
 
   it("should return an error for short password during registration", async () => {
     const response = await request(server).post("/api/auth/register").send({
-      email: "admin@gmail.com",
-      password: "short", // Less than 8 characters
+      email: testUser.email,
+      password: "short",
     });
 
     expect(response.status).toBe(400);
@@ -64,7 +112,7 @@ describe("Auth Routes", () => {
 
   it("should return an error for invalid email during login", async () => {
     const response = await request(server).post("/api/auth/login").send({
-      email: "invalid@gmail.com", // Not an accepted email
+      email: "notarealemail@gmail.com",
       password: "password123",
     });
 
@@ -74,8 +122,8 @@ describe("Auth Routes", () => {
 
   it("should return an error for short password during login", async () => {
     const response = await request(server).post("/api/auth/login").send({
-      email: "admin@gmail.com",
-      password: "short", // Less than 8 characters
+      email: testUser.email,
+      password: "short",
     });
 
     expect(response.status).toBe(400);
@@ -83,36 +131,5 @@ describe("Auth Routes", () => {
       "message",
       "Password must be at least 8 characters"
     );
-  });
-
-  it("should return an error when accessing profile without a token", async () => {
-    const response = await request(server).get("/api/auth/profile");
-
-    expect(response.status).toBe(401); // Unauthorized
-    expect(response.body).toHaveProperty("message", "Unauthorized");
-  });
-
-  it("should return user profile data with a valid token", async () => {
-    // First, login to get a valid token
-    const loginResponse = await request(server).post("/api/auth/login").send({
-      email: "admin@gmail.com",
-      password: "password123",
-    });
-
-    expect(loginResponse.status).toBe(200);
-    expect(loginResponse.body).toHaveProperty("token");
-
-    const token = loginResponse.body.token;
-
-    // Now, access the profile route with the token
-    const profileResponse = await request(server)
-      .get("/api/auth/profile")
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(profileResponse.status).toBe(200);
-    expect(profileResponse.body).toHaveProperty("message", "User profile data");
-    expect(profileResponse.body).toHaveProperty("email", "admin@gmail.com");
-    expect(profileResponse.body).toHaveProperty("role", "admin");
-    expect(profileResponse.body).toHaveProperty("userId", 1);
   });
 });

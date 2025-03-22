@@ -8,7 +8,8 @@ const users = [
     role: "admin",
     profile: {
       fullName: "Admin User",
-      address: "123 Admin Street",
+      address1: "123 Admin Street",
+      address2: "",
       city: "Houston",
       state: "TX",
       zipCode: "77001",
@@ -91,9 +92,9 @@ export async function updateUserProfile(req, res) {
   try {
     const userId = req.user.userId;
 
-    let profile = await UserProfile.find({ userId });
+    let profile = await UserProfile.findOne({ userId });
     if (!profile) {
-      return res.status(400).json({ message: "Profile not found" });
+      return res.status(404).json({ message: "Profile not found" });
     }
 
     profile = await UserProfile.findOneAndUpdate(
