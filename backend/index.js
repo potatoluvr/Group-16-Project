@@ -8,6 +8,7 @@ import volunteerRoutes from "./routes/volunteerRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import notFound from "./routes/404.js";
 import connectDB from "./database.js";
+import reportingRoutes from "./routes/reportingRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -30,6 +31,8 @@ app.use("/api/events", eventRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/volunteers", volunteerRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/reports", reportingRoutes);
+
 app.use("*", notFound);
 
 export default app;

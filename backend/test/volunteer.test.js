@@ -160,7 +160,7 @@ describe("Volunteer Matching API", () => {
     expect(res.body.message).toBe("Volunteer matched successfully!");
   });
 
-  // New test case for invalid volunteer ID format
+  // test case for invalid volunteer ID format
   it("should return 400 for invalid volunteer ID format", async () => {
     const res = await request(app).post("/api/volunteers/match").send({
       volunteerId: "invalid_id_format",
@@ -171,7 +171,7 @@ describe("Volunteer Matching API", () => {
     expect(res.body.message).toBe("Invalid volunteer ID format");
   });
 
-  // New test case for invalid event ID format
+  // test case for invalid event ID format
   it("should return 400 for invalid event ID format", async () => {
     const res = await request(app).post("/api/volunteers/match").send({
       volunteerId,
