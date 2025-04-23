@@ -5,14 +5,15 @@ import {
 
 export const getVolunteerHistoryReport = async (req, res) => {
   try {
-    const csvBuffer = await generateVolunteerHistoryReport();
-    res.setHeader("Content-Type", "text/csv");
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=volunteer_history_report.csv"
-    );
-    res.send(csvBuffer);
+    const format = req.query.format || "csv";
+    const { buffer, contentType, fileName } =
+      await generateVolunteerHistoryReport(format);
+
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
+    res.send(buffer);
   } catch (err) {
+    console.error("Error generating volunteer history report:", err);
     res
       .status(500)
       .json({ error: "Failed to generate volunteer history report." });
@@ -21,14 +22,15 @@ export const getVolunteerHistoryReport = async (req, res) => {
 
 export const getEventAssignmentsReport = async (req, res) => {
   try {
-    const csvBuffer = await generateEventAssignmentsReport();
-    res.setHeader("Content-Type", "text/csv");
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=event_assignments_report.csv"
-    );
-    res.send(csvBuffer);
+    const format = req.query.format || "csv";
+    const { buffer, contentType, fileName } =
+      await generateEventAssignmentsReport(format);
+
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
+    res.send(buffer);
   } catch (err) {
+    console.error("Error generating event assignments report:", err);
     res
       .status(500)
       .json({ error: "Failed to generate event assignments report." });

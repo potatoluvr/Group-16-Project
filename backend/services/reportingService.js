@@ -1,14 +1,31 @@
 import { VolunteerHistory } from "../models/VolunteerHistory.js";
 import { Event } from "../models/Event.js";
 import { generateCSV } from "../utils/csvGenerator.js";
+import { generatePDF } from "../utils/pdfGenerator.js";
 
-export const generateVolunteerHistoryReport = async () => {
+const formatFile = async (rows, title, format, defaultFilename) => {
+  if (format === "pdf") {
+    const buffer = await generatePDF(rows, title);
+    return {
+      buffer,
+      contentType: "application/pdf",
+      fileName: defaultFilename.replace(".csv", ".pdf"),
+    };
+  } else {
+    const buffer = generateCSV(rows);
+    return {
+      buffer,
+      contentType: "text/csv",
+      fileName: defaultFilename,
+    };
+  }
+};
+
+export const generateVolunteerHistoryReport = async (format = "csv") => {
   const history = await VolunteerHistory.find()
     .populate("volunteerId")
     .populate("eventId")
     .lean();
-
-  if (!history || history.length === 0) return generateCSV([]);
 
   const rows = history.map((entry) => ({
     VolunteerName: entry.volunteerId?.name || "N/A",
@@ -22,10 +39,15 @@ export const generateVolunteerHistoryReport = async () => {
     Timestamp: new Date(entry.timestamp).toLocaleString(),
   }));
 
-  return generateCSV(rows);
+  return formatFile(
+    rows,
+    "Volunteer History Report",
+    format,
+    "volunteer_history_report.csv"
+  );
 };
 
-export const generateEventAssignmentsReport = async () => {
+export const generateEventAssignmentsReport = async (format = "csv") => {
   const events = await Event.find().populate("assignedVolunteers").lean();
 
   const rows = [];
@@ -52,5 +74,10 @@ export const generateEventAssignmentsReport = async () => {
     }
   });
 
-  return generateCSV(rows);
+  return formatFile(
+    rows,
+    "Event Assignments Report",
+    format,
+    "event_assignments_report.csv"
+  );
 };
