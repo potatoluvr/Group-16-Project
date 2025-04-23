@@ -6,13 +6,14 @@ export const generateVolunteerHistoryReport = async () => {
   const history = await VolunteerHistory.find()
     .populate("volunteerId")
     .populate("eventId")
-    .sort({ timestamp: -1 })
     .lean();
+
+  if (!history || history.length === 0) return generateCSV([]);
 
   const rows = history.map((entry) => ({
     VolunteerName: entry.volunteerId?.name || "N/A",
     VolunteerEmail: entry.volunteerId?.email || "N/A",
-    Event: entry.eventId?.name || "N/A",
+    Event: entry.eventId?.title || "N/A",
     EventLocation: entry.eventId?.location || "N/A",
     EventDate: entry.eventId?.date
       ? new Date(entry.eventId.date).toLocaleDateString()
@@ -33,7 +34,7 @@ export const generateEventAssignmentsReport = async () => {
     if (event.assignedVolunteers?.length > 0) {
       event.assignedVolunteers.forEach((volunteer) => {
         rows.push({
-          Event: event.name,
+          Event: event.title,
           Location: event.location,
           Date: new Date(event.date).toLocaleDateString(),
           VolunteerName: volunteer.name,
@@ -42,7 +43,7 @@ export const generateEventAssignmentsReport = async () => {
       });
     } else {
       rows.push({
-        Event: event.name,
+        Event: event.title,
         Location: event.location,
         Date: new Date(event.date).toLocaleDateString(),
         VolunteerName: "N/A",
