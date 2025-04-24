@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { jwtDecode } from "jwt-decode";
 
 const states = [
   ["AL", "Alabama"],
@@ -79,7 +80,7 @@ function UserProfileForm() {
     zipCode: "",
     skills: [],
     preferences: "",
-    availability: [],
+    availability: new Date(),
   });
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -99,15 +100,26 @@ function UserProfileForm() {
     event.preventDefault();
 
     try {
+      const userId = localStorage.getItem("userID");
+      const token = localStorage.getItem("token");
+
+      const sanitizedFormData = {
+        ...formData,
+        skills: formData.skills.map((s) => s.value),
+      };
       const response = await fetch("http://localhost:5000/api/users/update", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: userId, ...formData }),
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: userId, ...sanitizedFormData }),
       });
 
       const data = await response.json();
 
-      if (data.success) {
+      if (data) {
+        console.log("navigate");
         alert("Profile updated successfully!");
         navigate("/user-profile");
       } else {
@@ -117,6 +129,57 @@ function UserProfileForm() {
       console.error("Error:", error);
       setErrorMessage("Server error. Please try again.");
     }
+  };
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const decoded = jwtDecode(token);
+
+        const response = await fetch(
+          `http://localhost:5000/api/users/${decoded.userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch profile");
+        }
+
+        const data = await response.json();
+
+        const formattedSkills = data.skills.map((s) => ({
+          value: s,
+          label: s.charAt(0).toUpperCase() + s.slice(1),
+        }));
+
+        setFormData({
+          fullName: data.fullName || "",
+          address1: data.address1 || "",
+          address2: data.address2 || "",
+          city: data.city || "",
+          state: data.state || "",
+          zipCode: data.zipCode || "",
+          skills: formattedSkills,
+          preferences: data.preferences || "",
+          availability: data.availability
+            ? new Date(data.availability)
+            : new Date(),
+        });
+      } catch (err) {
+        console.error("Error loading profile:", err);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  const getStateLabel = (value) => {
+    const state = stateOptions.find((option) => option.value === value);
+    return state;
   };
 
   return (
@@ -170,6 +233,7 @@ function UserProfileForm() {
           setFormData({ ...formData, state: selected.value })
         }
         required
+        value={getStateLabel(formData.state)}
       />
 
       <label>Zip Code (required)</label>
@@ -188,6 +252,7 @@ function UserProfileForm() {
         isMulti
         onChange={handleSkillsChange}
         required
+        value={formData.skills}
       />
 
       <label>Preferences (optional)</label>
@@ -202,7 +267,7 @@ function UserProfileForm() {
         selected={formData.availability}
         onChange={handleDateChange}
         multiple
-        dateFormat="yyyy-mm-dd"
+        dateFormat="yyyy-MM-dd"
         required
       />
 

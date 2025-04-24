@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+import { Types } from "mongoose";
 import { UserCredentials, UserProfile } from "../models/User.js";
 
 const users = [
@@ -37,9 +39,11 @@ const users = [
 // Get User Profile
 export async function getUserProfile(req, res) {
   try {
-    const userId = req.user?.userId;
+    const userId = req.params;
 
-    const profile = await UserProfile.findOne({ userId });
+    const profile = await UserProfile.findOne({
+      userId: new Types.ObjectId(userId),
+    });
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
     }
@@ -92,12 +96,7 @@ export async function updateUserProfile(req, res) {
   try {
     const userId = req.user.userId;
 
-    let profile = await UserProfile.findOne({ userId });
-    if (!profile) {
-      return res.status(404).json({ message: "Profile not found" });
-    }
-
-    profile = await UserProfile.findOneAndUpdate(
+    const updatedProfile = await UserProfile.findOneAndUpdate(
       { userId },
       {
         fullName: req.body.fullName,
@@ -110,12 +109,16 @@ export async function updateUserProfile(req, res) {
         preferences: req.body.preferences,
         availability: req.body.availability,
       },
-      { new: true }
+      { new: true, upsert: true, setDefaultsOnInsert: true }
     );
+
+    await UserCredentials.findByIdAndUpdate(userId, {
+      profileCompleted: true,
+    });
 
     return res
       .status(200)
-      .json({ message: "Profile updated successfully", profile });
+      .json({ message: "Profile updated successfully", updatedProfile });
   } catch (error) {
     console.error("Error updating profile:", error);
     return res.status(500).json({ message: "Server error" });
