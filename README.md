@@ -1,6 +1,6 @@
 # Website
 
-[group-16-project.vercel.app](https://group-16-project.vercel.app/)
+[group-16-project.vercel.app](https://group-16-project.vercel.app/) # NOT CURRENTLY UPDATED
 
 Forking from main to deploy on Vercel
 
