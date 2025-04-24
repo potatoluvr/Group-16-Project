@@ -59,7 +59,7 @@ function SignUpForm() {
 
       if (response.status === 201) {
         // User registered successfully, redirect to user profile edit
-        navigate("/user-profile/edit");
+        navigate("/");
       } else {
         setErrorMessage(data.message || "Signup failed, please try again.");
       }
