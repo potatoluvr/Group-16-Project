@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -53,11 +54,17 @@ function LoginForm() {
       if (response.status === 200) {
         // Save the token
         localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", data.userId); // Save userID
-        localStorage.setItem("role", data.role); // Save user role
-
+        const decoded = jwtDecode(data.token);
+        localStorage.setItem("userId", decoded.userId); // Save userID
+        localStorage.setItem("role", decoded.role); // Save user role
         // Redirect based on role
-        navigate(data.role === "admin" ? "/event-management" : "/user-profile");
+        if (decoded.profileCompleted === false) {
+          navigate("user-profile/edit");
+        } else {
+          navigate(
+            decoded.role === "admin" ? "/event-management" : "/user-profile"
+          );
+        }
       } else {
         setErrorMessage(data.message || "Login failed, please try again.");
       }
