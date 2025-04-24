@@ -7,7 +7,7 @@ function EventManagementForm() {
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [location, setLocation] = useState("");
-  const [requiredSkills, setRequiredSkills] = useState("");
+  const [skills, setRequiredSkills] = useState("");
   const [urgency, setUrgency] = useState("");
   const [eventDate, setEventDate] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -70,12 +70,13 @@ function EventManagementForm() {
     // handleSubmit
     const handleSubmit = async (event) => {
       event.preventDefault();
-    
+      const requiredSkills = skills.map(option => option.label)
+
       try {
         const response = await fetch("http://localhost:5000/api/events/create-event", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ eventName, eventDescription, requiredSkills, urgency }),
+          body: JSON.stringify({ eventName, eventDescription, location, requiredSkills, urgency, eventDate }),
         });
     
         const data = await response.json();
@@ -83,6 +84,7 @@ function EventManagementForm() {
         if (data.success) {
           alert("Event created successfully!");
         } else {
+          console.log("body: ", JSON.stringify({ eventName, eventDescription, requiredSkills, urgency, eventDate }))
           setErrorMessage("Failed to create event.");
         }
       } catch (error) {
@@ -139,7 +141,7 @@ function EventManagementForm() {
           <Select
             isMulti
             options={skillsOptions}
-            value={requiredSkills}
+            value={skills}
             onChange={(selected) => setRequiredSkills(selected)}
             required
             styles={lightdark}
