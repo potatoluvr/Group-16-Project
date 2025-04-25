@@ -16,12 +16,10 @@ export const registerUser = async (req, res) => {
   try {
     const { email, password, role } = req.body;
 
-    // Check if email is valid
     if (!email || !email.includes("@")) {
       return res.status(400).json({ message: "Invalid email address" });
     }
 
-    // Check password length
     if (!password || password.length < 8) {
       return res
         .status(400)
@@ -38,14 +36,33 @@ export const registerUser = async (req, res) => {
       password,
       role: role || "volunteer",
     });
+
     await user.save();
 
-    return res.status(201).json({ message: "User registered successfully" });
+    // Create and return JWT token
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        role: user.role,
+        profileCompleted: user.profileCompleted,
+      },
+      process.env.JWT_SECRET_KEY || "your_jwt_secret_key",
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    return res.status(201).json({
+      message: "User registered successfully",
+      token,
+    });
+
   } catch (error) {
     console.error("Registration form", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // Login user (placeholder)
 export const loginUser = async (req, res) => {
