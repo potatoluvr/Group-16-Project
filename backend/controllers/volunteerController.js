@@ -46,7 +46,7 @@ export const matchVolunteer = async (req, res) => {
 
     // Check if volunteer exists
     const volunteer = await UserProfile.findOne({
-      userId: volunteerId,
+      _id: volunteerId,
     }).populate("userId");
 
     if (!volunteer) {
@@ -77,7 +77,7 @@ export const matchVolunteer = async (req, res) => {
     const newMatch = new VolunteerHistory({
       volunteerId,
       eventId,
-      status: "Upcoming",
+      status: "Pending",
     });
 
     await newMatch.save();
