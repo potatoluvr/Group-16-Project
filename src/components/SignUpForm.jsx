@@ -46,28 +46,26 @@ function SignUpForm() {
     setErrorMessage(""); // Clear error message if everything is valid
 
     try {
-      // Send data to the back end using fetch
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ email, password }),
       });
-
-
-      const data = await response.json(); // Parse JSON response
-
+    
+      const result = await response.json(); // Parse JSON response
+    
       if (response.status === 201) {
-        // User registered successfully, redirect to user profile edit
-        navigate("/");
+        navigate("/user-profile/edit");
       } else {
-        setErrorMessage(data.message || "Signup failed, please try again.");
+        setErrorMessage(result.message || "Signup failed, please try again.");
       }
     } catch (error) {
       setErrorMessage("An error occurred. Please try again later.");
       console.error("Signup error:", error);
     }
+
   };
 
   return (
