@@ -124,3 +124,12 @@ export async function updateUserProfile(req, res) {
     return res.status(500).json({ message: "Server error" });
   }
 }
+
+export const getVolunteers = async (req, res) => {
+  try {
+    const profiles = await UserProfile.find();
+    res.json(profiles);
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};

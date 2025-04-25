@@ -33,9 +33,7 @@ function VolunteerMatchingForm() {
   const handleVolunteerSelect = (volunteerId) => {
     setSelectedVolunteer(volunteerId);
 
-    const selected = volunteers.find(
-      (volunteer) => volunteer.id === parseInt(volunteerId)
-    );
+    const selected = volunteers.find((volunteer) => volunteer._id == volunteerId);
     if (selected) {
       setVolunteerDetails({
         skills: selected.skills,
@@ -48,11 +46,11 @@ function VolunteerMatchingForm() {
   const handleEventSelect = (eventId) => {
     setSelectedEvent(eventId);
 
-    const selected = events.find((event) => event.id === parseInt(eventId));
+    const selected = events.find((event) => event._id == eventId);
     if (selected) {
       setEventDetails({
-        description: selected.description,
-        skills: selected.skills,
+        description: selected.eventDescription,
+        skills: selected.requiredSkills,
       });
     }
     setShowEventList(false); // Close the event list after selection
@@ -90,7 +88,7 @@ function VolunteerMatchingForm() {
           onClick={() => setShowVolunteerList(!showVolunteerList)}
         >
           {selectedVolunteer
-            ? volunteers.find((v) => v.id === parseInt(selectedVolunteer)).name
+            ? volunteers.find((v) => v._id == selectedVolunteer).fullName
             : "Choose Volunteer"}
         </button>
 
@@ -98,10 +96,10 @@ function VolunteerMatchingForm() {
           <ul className="option-list">
             {volunteers.map((volunteer) => (
               <li
-                key={volunteer.id}
-                onClick={() => handleVolunteerSelect(volunteer.id)}
+                key={volunteer._id}
+                onClick={() => handleVolunteerSelect(volunteer._id)}
               >
-                {volunteer.name}
+                {volunteer.fullName}
               </li>
             ))}
           </ul>
@@ -111,7 +109,7 @@ function VolunteerMatchingForm() {
           <div className="volunteer-info">
             <p>
               <strong>Skills:</strong>{" "}
-              {volunteerDetails.skills || "Not specified"}
+              {volunteerDetails.skills.join(", ") || "Not specified"}
             </p>
             <p>
               <strong>Preferences:</strong>{" "}
@@ -125,14 +123,14 @@ function VolunteerMatchingForm() {
         <label>Select Event</label>
         <button type="button" onClick={() => setShowEventList(!showEventList)}>
           {selectedEvent
-            ? events.find((e) => e.id === parseInt(selectedEvent)).title
+            ? events.find((e) => e._id == selectedEvent).eventName
             : "Choose Event"}
         </button>
 
         {showEventList && (
           <ul className="option-list">
             {events.map((event) => (
-              <li key={event.id} onClick={() => handleEventSelect(event.id)}>
+              <li key={event._id} onClick={() => handleEventSelect(event._id)}>
                 <strong>{event.eventName}</strong>
                 <p style={{ fontSize: "smaller" }}>{event.eventDescription}</p>
                 <p style={{ fontSize: "smaller" }}>
@@ -149,7 +147,7 @@ function VolunteerMatchingForm() {
               <strong>Description:</strong> {eventDetails.description}
             </p>
             <p>
-              <strong>Skills:</strong> {eventDetails.skills}
+              <strong>Skills:</strong> {eventDetails.skills.join(", ")}
             </p>
           </div>
         )}
