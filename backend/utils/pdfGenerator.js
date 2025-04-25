@@ -12,10 +12,8 @@ export const generatePDF = async (data, title = "Report") => {
         resolve(result);
       });
 
-      /*
       doc.fontSize(18).text(title, { align: "center" });
       doc.moveDown();
-      */
 
       if (data.length > 0) {
         const headers = Object.keys(data[0]);

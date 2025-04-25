@@ -2,82 +2,95 @@ import { VolunteerHistory } from "../models/VolunteerHistory.js";
 import { Event } from "../models/Event.js";
 import { generateCSV } from "../utils/csvGenerator.js";
 import { generatePDF } from "../utils/pdfGenerator.js";
+import { UserCredentials, UserProfile } from "../models/User.js";
 
-const formatFile = async (rows, title, format, defaultFilename) => {
+const generateReportBuffer = async (data, format, baseFileName) => {
+  let buffer;
+  let contentType;
+  let extension;
+
   if (format === "pdf") {
-    const buffer = await generatePDF(rows, title);
-    return {
-      buffer,
-      contentType: "application/pdf",
-      fileName: defaultFilename.replace(".csv", ".pdf"),
-    };
+    buffer = await generatePDF(
+      data,
+      baseFileName.replace("-", " ").toUpperCase()
+    );
+    contentType = "application/pdf";
+    extension = "pdf";
   } else {
-    const buffer = generateCSV(rows);
-    return {
-      buffer,
-      contentType: "text/csv",
-      fileName: defaultFilename,
-    };
+    buffer = generateCSV(data);
+    contentType = "text/csv";
+    extension = "csv";
   }
+
+  const fileName = `${baseFileName}-${new Date()
+    .toISOString()
+    .slice(0, 10)}.${extension}`;
+
+  return { buffer, contentType, fileName };
 };
 
 export const generateVolunteerHistoryReport = async (format = "csv") => {
-  const history = await VolunteerHistory.find()
-    .populate("volunteerId")
-    .populate("eventId")
-    .lean();
+  const historyRecords = await VolunteerHistory.find()
+    .populate("eventId", "eventName location eventDate")
+    .populate("volunteerId");
 
-  const rows = history.map((entry) => ({
-    VolunteerName: entry.volunteerId?.name || "N/A",
-    VolunteerEmail: entry.volunteerId?.email || "N/A",
-    Event: entry.eventId?.title || "N/A",
-    EventLocation: entry.eventId?.location || "N/A",
-    EventDate: entry.eventId?.date
-      ? new Date(entry.eventId.date).toLocaleDateString()
-      : "N/A",
-    Status: entry.status,
-    Timestamp: new Date(entry.timestamp).toLocaleString(),
-  }));
+  const userIds = historyRecords.map((r) => r.volunteerId?._id);
+  const profiles = await UserProfile.find({ userId: { $in: userIds } });
 
-  return formatFile(
-    rows,
-    "Volunteer History Report",
-    format,
-    "volunteer_history_report.csv"
-  );
+  const profileMap = new Map();
+  profiles.forEach((p) => profileMap.set(p.userId.toString(), p));
+
+  const formattedData = historyRecords.map((record) => {
+    const volunteer = record.volunteerId;
+    const profile = profileMap.get(volunteer?._id.toString());
+
+    return {
+      Volunteer: profile?.fullName || "N/A",
+      Email: volunteer?.email || "N/A",
+      Event: record.eventId?.eventName || "N/A",
+      Location: record.eventId?.location || "N/A",
+      Date: record.eventId?.eventDate?.toISOString().split("T")[0] || "N/A",
+      Status: record.status,
+    };
+  });
+
+  return generateReportBuffer(formattedData, format, "volunteer-history");
 };
 
 export const generateEventAssignmentsReport = async (format = "csv") => {
-  const events = await Event.find().populate("assignedVolunteers").lean();
+  const events = await Event.find().populate("assignedVolunteers");
 
-  const rows = [];
+  const userIds = events.flatMap((e) => e.assignedVolunteers).map((u) => u._id);
+  const profiles = await UserProfile.find({ userId: { $in: userIds } });
 
-  events.forEach((event) => {
-    if (event.assignedVolunteers?.length > 0) {
-      event.assignedVolunteers.forEach((volunteer) => {
-        rows.push({
-          Event: event.title,
+  const profileMap = new Map();
+  profiles.forEach((p) => profileMap.set(p.userId.toString(), p));
+
+  const formattedData = events.flatMap((event) => {
+    if (!event.assignedVolunteers.length) {
+      return [
+        {
+          Event: event.eventName,
           Location: event.location,
-          Date: new Date(event.date).toLocaleDateString(),
-          VolunteerName: volunteer.name,
-          VolunteerEmail: volunteer.email,
-        });
-      });
-    } else {
-      rows.push({
-        Event: event.title,
-        Location: event.location,
-        Date: new Date(event.date).toLocaleDateString(),
-        VolunteerName: "N/A",
-        VolunteerEmail: "N/A",
-      });
+          Date: event.eventDate?.toISOString().split("T")[0] || "N/A",
+          Volunteer: "None",
+          Email: "N/A",
+        },
+      ];
     }
+
+    return event.assignedVolunteers.map((vol) => {
+      const profile = profileMap.get(vol._id.toString());
+
+      return {
+        Event: event.eventName,
+        Location: event.location,
+        Date: event.eventDate?.toISOString().split("T")[0] || "N/A",
+        Volunteer: profile?.fullName || "N/A",
+        Email: vol.email || "N/A",
+      };
+    });
   });
 
-  return formatFile(
-    rows,
-    "Event Assignments Report",
-    format,
-    "event_assignments_report.csv"
-  );
+  return generateReportBuffer(formattedData, format, "event-assignments");
 };

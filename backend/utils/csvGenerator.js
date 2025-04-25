@@ -11,5 +11,5 @@ export const generateCSV = (data) => {
   const csvContent =
     csvStringifier.getHeaderString() + csvStringifier.stringifyRecords(data);
 
-  return Buffer.from(csvContent, "utf-8");
+  return Buffer.from("\uFEFF" + csvContent, "utf-8");
 };
