@@ -108,8 +108,8 @@ function UserProfileForm() {
           skills: formData.skills.map((s) => s.value),
         };
   
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile`, {
-          method: "PUT",
+        fetch(`${import.meta.env.VITE_API_URL}/api/users/update`, {
+          method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
