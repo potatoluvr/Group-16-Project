@@ -54,7 +54,9 @@ function SignUpForm() {
         body: JSON.stringify({ email, password }),
       });
     
-      const result = await response.json(); // Parse JSON response
+      const result = await response.json();
+      console.log("Response status:", response.status);
+      console.log("API result:", result);
     
       if (response.status === 201) {
         navigate("/user-profile/edit");
