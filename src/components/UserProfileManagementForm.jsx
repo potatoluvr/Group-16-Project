@@ -135,7 +135,19 @@ function UserProfileForm() {
       const fetchUserProfile = async () => {
         try {
           const token = localStorage.getItem("token");
-          const decoded = jwtDecode(token);
+          if (!token) {
+            console.error("No token found in localStorage.");
+            return;
+          }
+          
+          let decoded;
+          try {
+            decoded = jwtDecode(token);
+          } catch (err) {
+            console.error("Invalid JWT token:", err.message);
+            return;
+          }
+
   
           const response = await fetch(
             `${import.meta.env.VITE_API_URL}/api/users/${decoded.userId}`,
