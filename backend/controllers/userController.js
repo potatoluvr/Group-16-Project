@@ -39,7 +39,7 @@ const users = [
 // Get User Profile
 export async function getUserProfile(req, res) {
   try {
-    const userId = req.params;
+    const userId = req.params.id;
 
     const profile = await UserProfile.findOne({
       userId: new Types.ObjectId(userId),
