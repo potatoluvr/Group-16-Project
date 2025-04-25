@@ -12,16 +12,17 @@ import Header from "./components/Header";
 import { useState, useEffect } from "react";
 
 function App() {
-  const [role, setRole] = useState(null);
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     const storedRole = localStorage.getItem("role");
     setRole(storedRole);
   }, []);
 
-  if (role === null) {
-    return <p>Loading...</p>;  // ✅ Show loading instead of blank
+  if (localStorage.getItem("token") && role === "") {
+    return <p>Loading...</p>; // only if logged in but role not ready
   }
+
 
   return (
     <Router>
