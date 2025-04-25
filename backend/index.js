@@ -20,7 +20,11 @@ connectDB();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://group-16-project-bay.vercel.app', // your frontend on Vercel
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+}));
 app.get("/", (req, res) => {
   res.send("Hello");
 });
