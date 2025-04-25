@@ -59,7 +59,7 @@ function LoginForm() {
         localStorage.setItem("role", decoded.role); // Save user role
         // Redirect based on role
         if (decoded.profileCompleted === false) {
-          navigate("user-profile/edit");
+          navigate("/user-profile/edit");
         } else {
           navigate(
             decoded.role === "admin" ? "/event-management" : "/user-profile"
