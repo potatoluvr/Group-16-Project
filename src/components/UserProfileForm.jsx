@@ -8,16 +8,23 @@ function UserProfile() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Function to get userId from token or localStorage
-
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const decoded = jwtDecode(token);
+        if (!token) {
+          throw new Error("Token not found");
+        }
+
+        let decoded;
+        try {
+          decoded = jwtDecode(token);
+        } catch (err) {
+          throw new Error("Invalid token");
+        }
 
         const response = await fetch(
-          `http://localhost:5000/api/users/${decoded.userId}`,
+          `${import.meta.env.VITE_API_URL}/api/users/${decoded.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -33,6 +40,9 @@ function UserProfile() {
         setUserData(data);
         setLoading(false);
       } catch (err) {
+        console.error("Profile load error:", err.message);
+        setErrorMessage("Failed to load profile. Please try again.");
+        setLoading(false);
         navigate("/");
       }
     };
@@ -52,7 +62,6 @@ function UserProfile() {
     <div className="user-profile-container">
       <h2>User Profile</h2>
 
-      {/* Profile summary */}
       <div className="profile-section">
         <p>
           <strong>Name:</strong> {userData.fullName}
@@ -69,7 +78,6 @@ function UserProfile() {
         </p>
       </div>
 
-      {/* Navigation buttons */}
       <div className="button-group">
         <button onClick={() => navigate("/user-profile/edit")}>
           Edit Profile
