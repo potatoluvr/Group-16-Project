@@ -8,6 +8,7 @@ import "./components/FooterStyle.css";
 import "./components/HeaderStyle.css";
 import VolunteerHisoryPage from "./webpages/VolunteerHisoryPage";
 import UserProfile from "./webpages/UserProfile";
+import Header from "./components/Header";
 import { useState, useEffect } from "react";
 
 function App() {
@@ -18,24 +19,27 @@ function App() {
     setRole(storedRole);
   }, []);
 
+  if (role === null) {
+    return <p>Loading...</p>;  // ✅ Show loading instead of blank
+  }
+
   return (
     <Router>
-      {role !== null && (
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/user-profile/edit" element={<UserProfileManagement />} />
-          <Route path="/user-profile" element={<UserProfile />} />
-          <Route
-            path="/event-management"
-            element={
-              role === "admin" ? <EventManagement /> : <Navigate to="/" replace />
-            }
-          />
-          <Route path="/user-profile/volunteer-history" element={<VolunteerHisoryPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      )}
+      <Header role={role} />  {/* Pass role to Header */}
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/user-profile/edit" element={<UserProfileManagement />} />
+        <Route path="/user-profile" element={<UserProfile />} />
+        <Route
+          path="/event-management"
+          element={
+            role === "admin" ? <EventManagement /> : <Navigate to="/" replace />
+          }
+        />
+        <Route path="/user-profile/volunteer-history" element={<VolunteerHisoryPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </Router>
   );
 }
