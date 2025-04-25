@@ -1,7 +1,4 @@
 
 {
-  "buildCommand": "npm install && npm run build",
-  "outputDirectory": "dist",
-  "ignoreCommand": "echo 'Ignoring backend folder'"
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
