@@ -5,26 +5,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { jwtDecode } from "jwt-decode";
 
-
-useEffect(() => {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    console.warn("No token found in localStorage.");
-    navigate("/"); // or redirect to login
-    return;
-  }
-
-  try {
-    const decoded = jwtDecode(token);
-  } catch (err) {
-    console.error("Invalid token:", err.message);
-    localStorage.removeItem("token");
-    navigate("/");
-  }
-}, []);
-
-
 const states = [
   ["AL", "Alabama"],
   ["AK", "Alaska"],
