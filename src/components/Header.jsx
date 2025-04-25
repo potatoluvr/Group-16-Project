@@ -1,16 +1,21 @@
 import { Link } from "react-router-dom";
 
 function Header() {
+  const role = localStorage.getItem("role"); 
+
   return (
     <header>
-      <Link to="/event-management">
-        {" "}
-        {/* Temporary button to open event page, will eventually make it only show for admins*/}
-        <button>Event Management</button>
-      </Link>
+      {/* Only show Event Management button for admins */}
+      {role === "admin" && (
+        <Link to="/event-management">
+          <button>Event Management</button>
+        </Link>
+      )}
+
       <p>Header</p>
     </header>
   );
 }
 
 export default Header;
+
