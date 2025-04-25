@@ -97,53 +97,54 @@ function UserProfileForm() {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    try {
-      const userId = localStorage.getItem("userID");
-      const token = localStorage.getItem("token");
-
-      const sanitizedFormData = {
-        ...formData,
-        skills: formData.skills.map((s) => s.value),
-      };
-      const response = await fetch("http://localhost:5000/api/users/update", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: userId, ...sanitizedFormData }),
-      });
-
-      const data = await response.json();
-
-      if (data) {
-        console.log("navigate");
-        alert("Profile updated successfully!");
-        navigate("/user-profile");
-      } else {
-        setErrorMessage(data.message);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setErrorMessage("Server error. Please try again.");
-    }
-  };
-  useEffect(() => {
-    const fetchUserProfile = async () => {
+      event.preventDefault();
+  
       try {
+        const userId = localStorage.getItem("userId");
         const token = localStorage.getItem("token");
-        const decoded = jwtDecode(token);
-
-        const response = await fetch(
-          `http://localhost:5000/api/users/${decoded.userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  
+        const sanitizedFormData = {
+          ...formData,
+          skills: formData.skills.map((s) => s.value),
+        };
+  
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile`, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: userId, ...sanitizedFormData }),
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          alert("Profile updated successfully!");
+          navigate("/user-profile");
+        } else {
+          setErrorMessage(data.message || "Failed to update profile");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setErrorMessage("Server error. Please try again.");
+      }
+    };
+  
+    useEffect(() => {
+      const fetchUserProfile = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const decoded = jwtDecode(token);
+  
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/users/${decoded.userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
         if (!response.ok) {
           throw new Error("Failed to fetch profile");
