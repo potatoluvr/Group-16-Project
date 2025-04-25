@@ -1,23 +1,23 @@
 import { VolunteerHistory } from "../models/VolunteerHistory.js";
 import { UserCredentials, UserProfile } from "../models/User.js";
 import { Event } from "../models/Event.js";
+import { Types } from "mongoose";
 import mongoose from "mongoose";
 
 // Get Volunteer History
 export const getVolunteerHistory = async (req, res) => {
   try {
-    const volunteerId = req.params.id;
-    const history = await VolunteerHistory.find({ volunteerId }).populate(
-      "eventId"
-    );
+    const volunteerId = req.params;
 
-    if (!history.length) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No volunteer history found." });
-    }
+    const history = await VolunteerHistory.find({
+      userId: new Types.ObjectId(volunteerId),
+    });
 
-    res.json({ success: true, history });
+    return res.json({
+      success: true,
+      history, // can be an empty array
+      message: history.length ? "History found." : "No history available.",
+    });
   } catch (error) {
     console.error("Match Volunteer Error:", error); // Log full error details
     return res.status(500).json({ success: false, message: error.message });
