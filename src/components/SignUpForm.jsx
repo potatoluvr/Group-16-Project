@@ -59,7 +59,7 @@ function SignUpForm() {
       console.log("API result:", result);
     
       if (response.status === 201) {
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("token", result.token);
         navigate("/");
       } else {
         setErrorMessage(result.message || "Signup failed, please try again.");
