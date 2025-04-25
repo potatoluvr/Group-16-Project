@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 
-function Header() {
-  const role = localStorage.getItem("role"); 
+function Header({ role }) {  
 
   return (
     <header>
@@ -11,7 +10,6 @@ function Header() {
           <button>Event Management</button>
         </Link>
       )}
-
       <p>Header</p>
     </header>
   );
