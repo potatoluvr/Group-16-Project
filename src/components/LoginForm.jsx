@@ -55,6 +55,15 @@ function LoginForm() {
         // Save the token
         localStorage.setItem("token", data.token);
         const decoded = jwtDecode(data.token);
+      
+        console.log("Decoded JWT:", decoded); //  decoding
+        console.log("Redirecting to:", decoded.profileCompleted === false
+          ? "/user-profile/edit"
+          : decoded.role === "admin"
+          ? "/event-management"
+          : "/user-profile"
+        );
+
         localStorage.setItem("userId", decoded.userId); // Save userID
         localStorage.setItem("role", decoded.role); // Save user role
         // Redirect based on role
