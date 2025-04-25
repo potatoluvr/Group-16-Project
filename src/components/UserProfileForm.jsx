@@ -71,14 +71,12 @@ function UserProfile() {
           {userData.state} {userData.zipCode}
         </p>
         <p>
-          <strong>Skills:</strong>{" "}
-          {Array.isArray(userData.skills) ? userData.skills.join(", ") : "N/A"}
+          <strong>Skills:</strong>
+          {userData.skills?.join(", ") || "N/A"}
         </p>
         <p>
-          <strong>Availability:</strong>{" "}
-          {Array.isArray(userData.availability)
-            ? userData.availability.join(", ")
-            : "N/A"}
+          <strong>Availability:</strong>
+          {userData.availability?.join(", ") || "N/A"}
         </p>
       </div>
 
