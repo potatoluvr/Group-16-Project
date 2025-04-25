@@ -47,13 +47,14 @@ function SignUpForm() {
 
     try {
       // Send data to the back end using fetch
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }), // Convert data to JSON string
+        body: JSON.stringify(data),
       });
+
 
       const data = await response.json(); // Parse JSON response
 
