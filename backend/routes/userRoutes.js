@@ -13,7 +13,7 @@ router.get("/:id", getUserProfile);
 
 // Route to update user profile
 router.post("/create", verifyToken, createUserProfile);
-router.put("/profile", verifyToken, updateUserProfile); 
+router.post("/update", verifyToken, updateUserProfile);
 
 
 export default router;
