@@ -18,10 +18,15 @@ const app = express();
 // Load Database
 connectDB();
 
+const allowedOrigins = [
+  "https://group-16-project-bay.vercel.app",
+  "https://group-16-project-git-main-lissettes-projects-612f8720.vercel.app"
+];
+
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: 'https://group-16-project-bay.vercel.app', // your frontend on Vercel
+  origin: allowedOrigins, // your frontend on Vercel
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
