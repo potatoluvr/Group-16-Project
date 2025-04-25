@@ -108,7 +108,7 @@ function UserProfileForm() {
           skills: formData.skills.map((s) => s.value),
         };
   
-        fetch(`${import.meta.env.VITE_API_URL}/api/users/update`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/update`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -116,9 +116,9 @@ function UserProfileForm() {
           },
           body: JSON.stringify({ id: userId, ...sanitizedFormData }),
         });
-  
+        
         const data = await response.json();
-  
+        
         if (response.ok) {
           alert("Profile updated successfully!");
           navigate("/user-profile");
