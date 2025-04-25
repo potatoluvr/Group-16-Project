@@ -43,6 +43,7 @@ function UserProfile() {
         console.error("Profile load error:", err.message);
         setErrorMessage("Failed to load profile. Please try again.");
         setLoading(false);
+        navigate("/");
       }
     };
 
