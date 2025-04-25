@@ -23,6 +23,7 @@ app.use(express.json());
 app.use(cors({
   origin: 'https://group-16-project-bay.vercel.app', // your frontend on Vercel
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
 app.get("/", (req, res) => {
