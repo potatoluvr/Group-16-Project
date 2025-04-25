@@ -133,10 +133,10 @@ function VolunteerMatchingForm() {
           <ul className="option-list">
             {events.map((event) => (
               <li key={event.id} onClick={() => handleEventSelect(event.id)}>
-                <strong>{event.title}</strong>
-                <p style={{ fontSize: "smaller" }}>{event.description}</p>
+                <strong>{event.eventName}</strong>
+                <p style={{ fontSize: "smaller" }}>{event.eventDescription}</p>
                 <p style={{ fontSize: "smaller" }}>
-                  <strong>Skills:</strong> {event.skills}
+                  <strong>Skills:</strong> {event.requiredSkills.join(", ")}
                 </p>
               </li>
             ))}
