@@ -10,6 +10,8 @@ import VolunteerHisoryPage from "./webpages/VolunteerHisoryPage";
 import UserProfile from "./webpages/UserProfile";
 
 function App() {
+  const role = localStorage.getItem("role");
+  
   return (
     <Router>
       <Routes>
@@ -17,12 +19,23 @@ function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/user-profile/edit" element={<UserProfileManagement />} />
         <Route path="/user-profile" element={<UserProfile />} />
-        <Route path="/event-management" element={<EventManagement />} />
+        
+        {/* Protect event-management route for admin only */}
+        <Route
+          path="/event-management"
+          element={
+            role === "admin" ? (
+              <EventManagement />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+
         <Route
           path="/user-profile/volunteer-history"
           element={<VolunteerHisoryPage />}
         />
-
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
